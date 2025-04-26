@@ -29,7 +29,11 @@ const Body = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (salaryRef.current !== null) {
+    if (
+      salaryRef.current !== null &&
+      salaryRef.current.value !== "" &&
+      salaryRef.current.value !== "0"
+    ) {
       const salaryObj = salary(parseInt(salaryRef.current.value));
       setComputedSalary({
         taxableIncome: salaryObj.getTaxableIncome(),

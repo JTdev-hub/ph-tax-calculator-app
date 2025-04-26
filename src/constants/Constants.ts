@@ -9,8 +9,8 @@ export const salaryComputations: [string, ComputedSalaryKeys][] = [
 
 export const contributionComputations: [string, ComputedSalaryKeys][] = [
   ["SSS", "sssContribution"],
-  ["PhilHealth", "pagIbigContribution"],
-  ["Pag-IBIG", "philHealthContribution"],
+  ["PhilHealth", "philHealthContribution"],
+  ["Pag-IBIG", "pagIbigContribution"],
 ];
 
 export const totalDeductions: [string, ComputedSalaryKeys][] = [

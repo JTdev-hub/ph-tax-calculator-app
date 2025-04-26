@@ -144,7 +144,7 @@ class Salary {
 
   private static readonly PAGIBIG_BRACKET: PagIbigBracket[] = [
     {
-      min: 1_500,
+      min: 0,
       max: 1_500,
       employeeShare: 0.01,
     },
@@ -206,7 +206,7 @@ class Salary {
 
   findApplicablePagIbigBracket(): PagIbigBracket {
     const pagibigBracket = Salary.PAGIBIG_BRACKET.find(
-      (bracket) => this.salary >= bracket.min && this.salary < bracket.max
+      (bracket) => this.salary > bracket.min && this.salary < bracket.max
     ) || {
       min: 0,
       max: 0,
