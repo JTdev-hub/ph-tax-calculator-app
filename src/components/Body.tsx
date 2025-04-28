@@ -2,7 +2,7 @@ import Heading from "./Heading";
 import Card from "./Card";
 import { TbCurrencyPeso } from "react-icons/tb";
 import salary from "../class/Salary";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 import {
   salaryComputations,
   contributionComputations,
@@ -13,7 +13,8 @@ import { ComputedSalary } from "../types/types";
 import { formatPeso } from "../utils/format";
 
 const Body = () => {
-  const salaryRef = useRef<HTMLInputElement>(null);
+  const [salaryInput, setSalaryInput] = useState<string>("");
+
   const [computedSalary, setComputedSalary] = useState<ComputedSalary>({
     taxableIncome: 0,
     salary: 0,
@@ -26,15 +27,20 @@ const Body = () => {
     totalContribution: 0,
   });
 
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = event.target.value.replace(/,/g, ""); // remove commas\
+    const number = Number(rawValue);
+    if (!isNaN(number)) {
+      setSalaryInput(number.toLocaleString());
+    } else {
+      setSalaryInput(""); // Reset if not a valid number
+    }
+  };
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (
-      salaryRef.current !== null &&
-      salaryRef.current.value !== "" &&
-      salaryRef.current.value !== "0"
-    ) {
-      const salaryObj = salary(parseInt(salaryRef.current.value));
+    if (salaryInput !== null && salaryInput !== "" && salaryInput !== "0") {
+      const salaryObj = salary(parseInt(salaryInput.replace(/,/g, ""), 10));
       setComputedSalary({
         taxableIncome: salaryObj.computeTaxableIncome(),
         salary: salaryObj.salary,
@@ -50,8 +56,8 @@ const Body = () => {
   };
 
   const handleReset = () => {
-    if (salaryRef.current) {
-      salaryRef.current.value = "";
+    if (salaryInput) {
+      setSalaryInput("");
     }
     setComputedSalary({
       taxableIncome: 0,
@@ -95,10 +101,10 @@ const Body = () => {
                   </div>
                   <input
                     id="basicPay"
-                    type="number"
                     placeholder="0"
                     className="block w-full bg-white rounded-md border border-gray-300 pl-10 pr-3 py-3 text-gray-900 placeholder-gray-400  focus:border-purple-500 sm:text-sm"
-                    ref={salaryRef}
+                    value={salaryInput}
+                    onChange={handleOnChange}
                     inputMode="numeric"
                   />
                 </div>
