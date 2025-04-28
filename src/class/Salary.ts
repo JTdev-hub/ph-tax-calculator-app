@@ -1,38 +1,26 @@
-interface TaxBracket {
-  min: number;
-  max: number;
-  percentOver: number;
-  baseTax: number;
-  excessOver: number;
-}
+import {
+  TaxBracket,
+  PhilhealthBracket,
+  PagIbigBracket,
+  SocialSecurityBracket,
+} from "../types/global";
 
-interface SocialSecurityBracket {
-  min: number;
-  max: number;
-  regularSS: number;
-  mpf: number;
-}
-
-interface PagIbigBracket {
-  min: number;
-  max: number;
-  employeeShare: number;
-}
-
-interface PhilhealthBracket {
-  min: number;
-  max: number;
-  premiumRate: number;
-}
 class Salary {
-  salary: number;
-  annualSalary: number;
+  _salary: number;
+  _annualSalary: number;
   applicableTaxBracket: TaxBracket;
   applicablePhilhealthBracket: PhilhealthBracket;
   applicablePagIbigBracket: PagIbigBracket;
   applicableSSSBracket: SocialSecurityBracket;
 
   private static readonly TAX_BRACKETS: TaxBracket[] = [
+    {
+      min: 0,
+      max: 0,
+      baseTax: 0,
+      percentOver: 0,
+      excessOver: 0,
+    },
     {
       min: 0,
       max: 250_000,
@@ -79,6 +67,12 @@ class Salary {
   ];
 
   private static readonly SSS_BRACKET: SocialSecurityBracket[] = [
+    {
+      min: 0,
+      max: 0,
+      regularSS: 0,
+      mpf: 0,
+    },
     { min: 0, max: 5250, regularSS: 250, mpf: 0 },
     { min: 5250, max: 5750, regularSS: 275, mpf: 0 },
     { min: 5750, max: 6250, regularSS: 300, mpf: 0 },
@@ -145,6 +139,11 @@ class Salary {
   private static readonly PAGIBIG_BRACKET: PagIbigBracket[] = [
     {
       min: 0,
+      max: 0,
+      employeeShare: 0,
+    },
+    {
+      min: 0,
       max: 1_500,
       employeeShare: 0.01,
     },
@@ -157,6 +156,11 @@ class Salary {
   ];
 
   private static readonly PHILHEALTH_BRACKET: PhilhealthBracket[] = [
+    {
+      min: 0,
+      max: 0,
+      premiumRate: 0,
+    },
     {
       min: 0,
       max: 10_000,
@@ -176,137 +180,113 @@ class Salary {
     },
   ];
 
-  findApplicableTaxBracket(): TaxBracket {
-    const taxBracket = Salary.TAX_BRACKETS.find(
-      (bracket) =>
-        this.annualSalary > bracket.min && this.annualSalary <= bracket.max
-    ) || {
-      min: 0,
-      max: 0,
-      baseTax: 0,
-      percentOver: 0,
-      excessOver: 0,
-    };
+  private findBracket<T extends { min: number; max: number }>(
+    brackets: T[],
+    salary: number,
+    inclusiveMax = false
+  ): T {
+    const bracket =
+      brackets.find((bracket) =>
+        inclusiveMax
+          ? salary > bracket.min && salary <= bracket.max
+          : salary > bracket.min && salary < bracket.max
+      ) || brackets[0];
 
-    return taxBracket;
-  }
-
-  findApplicableSSSBracket(): SocialSecurityBracket {
-    const sssBracket = Salary.SSS_BRACKET.find(
-      (bracket) => this.salary > bracket.min && this.salary < bracket.max
-    ) || {
-      min: 0,
-      max: 0,
-      regularSS: 0,
-      mpf: 0,
-    };
-
-    return sssBracket;
-  }
-
-  findApplicablePagIbigBracket(): PagIbigBracket {
-    const pagibigBracket = Salary.PAGIBIG_BRACKET.find(
-      (bracket) => this.salary > bracket.min && this.salary < bracket.max
-    ) || {
-      min: 0,
-      max: 0,
-      employeeShare: 0,
-    };
-
-    return pagibigBracket;
-  }
-
-  findApplicablePhilHealthBracket(): PhilhealthBracket {
-    const philhealthBracket = Salary.PHILHEALTH_BRACKET.find(
-      (bracket) =>
-        this.annualSalary > bracket.min && this.annualSalary < bracket.max
-    ) || {
-      min: 0,
-      max: 0,
-      premiumRate: 0,
-    };
-
-    return philhealthBracket;
+    return bracket;
   }
 
   constructor(salary: number) {
-    this.salary = salary;
-    this.annualSalary = this.salary * 12;
-    this.applicableTaxBracket = this.findApplicableTaxBracket();
-    this.applicableSSSBracket = this.findApplicableSSSBracket();
-    this.applicablePagIbigBracket = this.findApplicablePagIbigBracket();
-    this.applicablePhilhealthBracket = this.findApplicablePhilHealthBracket();
+    this._salary = salary;
+    this._annualSalary = this._salary * 12;
+    this.applicableTaxBracket = this.findBracket(
+      Salary.TAX_BRACKETS,
+      this.annualSalary,
+      true
+    );
+    this.applicableSSSBracket = this.findBracket(
+      Salary.SSS_BRACKET,
+      this.salary
+    );
+    this.applicablePagIbigBracket = this.findBracket(
+      Salary.PAGIBIG_BRACKET,
+      this.salary
+    );
+    this.applicablePhilhealthBracket = this.findBracket(
+      Salary.PHILHEALTH_BRACKET,
+      this.annualSalary
+    );
   }
 
-  getPhilhealthContribution(): number {
+  get salary(): number {
+    return this._salary;
+  }
+
+  get annualSalary(): number {
+    return this._annualSalary;
+  }
+
+  computeSSSContribution(): number {
+    return this.applicableSSSBracket.regularSS + this.applicableSSSBracket.mpf;
+  }
+
+  computePhilHealthContribution(): number {
     const philHealthContribution =
       this.applicablePhilhealthBracket.premiumRate * this.salary;
 
-    if (this.salary < Salary.PHILHEALTH_BRACKET[0].max) {
+    if (this.salary < Salary.PHILHEALTH_BRACKET[1].max) {
       return 500 / 2;
     }
 
-    if (this.salary > Salary.PHILHEALTH_BRACKET[2].min) {
+    if (this.salary > Salary.PHILHEALTH_BRACKET[3].min) {
       return 5_000 / 2;
     }
     return philHealthContribution / 2;
   }
 
-  getPagibigContribution(): number {
+  computePagIbigContribution(): number {
     const pagIbigContribution =
       this.applicablePagIbigBracket.employeeShare * this.salary;
 
     return pagIbigContribution > 200 ? 200 : pagIbigContribution;
   }
 
-  getMonthlyTax() {
+  computeContributionTotal(): number {
+    return (
+      this.computePhilHealthContribution() +
+      this.computeSSSContribution() +
+      this.computePagIbigContribution()
+    );
+  }
+
+  computeTaxableIncome(): number {
+    return (
+      this.salary -
+      (this.computeSSSContribution() +
+        this.computePagIbigContribution() +
+        this.computePhilHealthContribution())
+    );
+  }
+
+  computeMonthlyTax() {
     return (
       (this.applicableTaxBracket.baseTax +
-        (this.getTaxableIncome() * 12 - this.applicableTaxBracket.excessOver) *
+        (this.computeTaxableIncome() * 12 -
+          this.applicableTaxBracket.excessOver) *
           this.applicableTaxBracket.percentOver) /
       12
     );
   }
 
-  getAnnualTax() {
-    return this.getMonthlyTax() * 12;
+  computeAnnualTax() {
+    return this.computeMonthlyTax() * 12;
   }
 
-  getSSSContribution(): number {
-    return this.applicableSSSBracket.regularSS + this.applicableSSSBracket.mpf;
+  computeNetSalary(): number {
+    return this.computeTaxableIncome() - this.computeMonthlyTax();
   }
 
-  getTaxableIncome(): number {
-    return (
-      this.salary -
-      (this.getSSSContribution() +
-        this.getPagibigContribution() +
-        this.getPhilhealthContribution())
-    );
-  }
-
-  getNetSalary(): number {
-    return this.getTaxableIncome() - this.getMonthlyTax();
-  }
-
-  getSalary(): number {
-    return this.salary;
-  }
-
-  getAnnualSalary(): number {
-    return this.annualSalary;
-  }
-
-  getContributionTotal(): number {
-    return (
-      this.getPhilhealthContribution() +
-      this.getSSSContribution() +
-      this.getPagibigContribution()
-    );
-  }
-
-  getTotalDeductions(): number {
-    return this.getMonthlyTax() + this.getContributionTotal();
+  computeTotalDeductions(): number {
+    return this.computeMonthlyTax() + this.computeContributionTotal();
   }
 }
 

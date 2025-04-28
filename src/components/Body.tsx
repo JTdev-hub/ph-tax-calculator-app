@@ -36,15 +36,15 @@ const Body = () => {
     ) {
       const salaryObj = salary(parseInt(salaryRef.current.value));
       setComputedSalary({
-        taxableIncome: salaryObj.getTaxableIncome(),
-        salary: salaryObj.getSalary(),
-        monthlyEstimatedTax: salaryObj.getMonthlyTax(),
-        sssContribution: salaryObj.getSSSContribution(),
-        pagIbigContribution: salaryObj.getPagibigContribution(),
-        philHealthContribution: salaryObj.getPhilhealthContribution(),
-        netSalary: salaryObj.getNetSalary(),
-        totalDeductions: salaryObj.getTotalDeductions(),
-        totalContribution: salaryObj.getContributionTotal(),
+        taxableIncome: salaryObj.computeTaxableIncome(),
+        salary: salaryObj.salary,
+        monthlyEstimatedTax: salaryObj.computeMonthlyTax(),
+        sssContribution: salaryObj.computeSSSContribution(),
+        pagIbigContribution: salaryObj.computePagIbigContribution(),
+        philHealthContribution: salaryObj.computePhilHealthContribution(),
+        netSalary: salaryObj.computeNetSalary(),
+        totalDeductions: salaryObj.computeTotalDeductions(),
+        totalContribution: salaryObj.computeContributionTotal(),
       });
     }
   };
