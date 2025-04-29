@@ -65,7 +65,7 @@ class Salary {
       excessOver: 8_000_000,
     },
   ];
-
+  //TODO: Fix Logic on computation for the lower salary brackets
   private static readonly SSS_BRACKET: SocialSecurityBracket[] = [
     {
       min: 0,
@@ -259,12 +259,13 @@ class Salary {
   }
 
   computeTaxableIncome(): number {
-    return (
+    const taxableIncome =
       this.salary -
       (this.computeSSSContribution() +
         this.computePagIbigContribution() +
-        this.computePhilHealthContribution())
-    );
+        this.computePhilHealthContribution());
+
+    return taxableIncome < 1 ? 0 : taxableIncome;
   }
 
   computeMonthlyTax() {

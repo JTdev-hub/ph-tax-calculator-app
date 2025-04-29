@@ -1,23 +1,22 @@
-import { ComputedSalary } from "../types/types";
+import { ComputationKeys } from "../types/global";
 
-type ComputedSalaryKeys = keyof ComputedSalary;
-export const salaryComputations: [string, ComputedSalaryKeys][] = [
-  ["Basic Pay", "salary"],
-  ["Taxable Income", "taxableIncome"],
-  ["Witholding Tax", "monthlyEstimatedTax"],
+export const salaryComputations: ComputationKeys[] = [
+  { label: "Basic Pay", key: "salary" },
+  { label: "Taxable Income", key: "taxableIncome" },
+  { label: "Withholding Tax", key: "monthlyEstimatedTax" },
 ];
 
-export const contributionComputations: [string, ComputedSalaryKeys][] = [
-  ["SSS", "sssContribution"],
-  ["PhilHealth", "philHealthContribution"],
-  ["Pag-IBIG", "pagIbigContribution"],
+export const contributionComputations: ComputationKeys[] = [
+  { label: "SSS", key: "sssContribution" },
+  { label: "PhilHealth", key: "philHealthContribution" },
+  { label: "Pag-IBIG", key: "pagIbigContribution" },
 ];
 
-export const totalDeductions: [string, ComputedSalaryKeys][] = [
-  ["Total Contributions", "totalContribution"],
-  ["Total Deductions", "totalDeductions"],
+export const totalDeductions: ComputationKeys[] = [
+  { label: "Total Contributions", key: "totalContribution" },
+  { label: "Total Deductions", key: "totalDeductions" },
 ];
 
-export const totalComputations: [string, ComputedSalaryKeys][] = [
-  ["Net Pay", "netSalary"],
+export const totalComputations: ComputationKeys[] = [
+  { label: "Net Pay", key: "netSalary" },
 ];
