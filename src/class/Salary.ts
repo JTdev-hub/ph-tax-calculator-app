@@ -65,7 +65,7 @@ class Salary {
       excessOver: 8_000_000,
     },
   ];
-  //TODO: Fix Logic on computation for the lower salary brackets
+
   private static readonly SSS_BRACKET: SocialSecurityBracket[] = [
     {
       min: 0,

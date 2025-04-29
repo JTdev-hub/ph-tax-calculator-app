@@ -1,21 +1,25 @@
 import Heading from "./Heading";
 import { useState } from "react";
 
-import { ComputedSalary, defaultComputedSalary } from "../types/global";
+import {
+  Computations,
+  ComputedSalary,
+  defaultComputedSalary,
+} from "../types/global";
 
 import Parameters from "./Parameters";
 import ComputationSummary from "./ComputationSummary";
-import {
-  contributionComputations,
-  salaryComputations,
-  totalComputations,
-  totalDeductions,
-} from "../constants/Constants";
+import { computationLabelKeys } from "../constants/Constants";
 
 const Body = () => {
   const [computedSalary, setComputedSalary] = useState<ComputedSalary>(
     defaultComputedSalary
   );
+
+  const computation: Computations = {
+    computationLabelKeys: computationLabelKeys,
+    computedSalary: computedSalary,
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 font-serrat">
@@ -24,14 +28,9 @@ const Body = () => {
 
         <div className="flex flex-col gap-6 mt-8">
           {/* Input Card */}
-          <Parameters onCompute={setComputedSalary}></Parameters>
-          <ComputationSummary
-            salaryComputations={salaryComputations}
-            contributionComputations={contributionComputations}
-            totalDeductions={totalDeductions}
-            totalComputations={totalComputations}
-            computedSalary={computedSalary}
-          ></ComputationSummary>
+          <Parameters onCompute={setComputedSalary} />
+          {/* Summary Card */}
+          <ComputationSummary computation={computation} />
         </div>
       </div>
     </div>

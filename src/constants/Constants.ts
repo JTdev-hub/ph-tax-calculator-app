@@ -1,4 +1,4 @@
-import { ComputationKeys } from "../types/global";
+import { ComputationKeys, ComputationLabelKeys } from "../types/global";
 
 export const salaryComputations: ComputationKeys[] = [
   { label: "Basic Pay", key: "salary" },
@@ -20,3 +20,10 @@ export const totalDeductions: ComputationKeys[] = [
 export const totalComputations: ComputationKeys[] = [
   { label: "Net Pay", key: "netSalary" },
 ];
+
+export const computationLabelKeys: ComputationLabelKeys = {
+  salaryComputations,
+  contributionComputations,
+  totalDeductions,
+  totalComputations,
+};

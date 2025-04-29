@@ -1,23 +1,12 @@
 import Card from "./Card";
-import { ComputationKeys } from "../types/global";
+import { Computations } from "../types/global";
 import { formatPeso } from "../utils/format";
-import { ComputedSalary } from "../types/global";
 
 interface Props {
-  salaryComputations: ComputationKeys[];
-  contributionComputations: ComputationKeys[];
-  totalDeductions: ComputationKeys[];
-  totalComputations: ComputationKeys[];
-  computedSalary: ComputedSalary;
+  computation: Computations;
 }
 
-const ComputationSummary = ({
-  salaryComputations,
-  contributionComputations,
-  totalDeductions,
-  totalComputations,
-  computedSalary,
-}: Props) => {
+const ComputationSummary = ({ computation }: Props) => {
   return (
     <>
       {/* Results Card */}
@@ -37,19 +26,23 @@ const ComputationSummary = ({
               Salary Computations
             </h3>
             <div className="space-y-3">
-              {salaryComputations.map((salaryComputation) => (
-                <div
-                  key={salaryComputation.key}
-                  className="flex justify-between items-center"
-                >
-                  <span className="text-gray-700">
-                    {salaryComputation.label}
-                  </span>
-                  <span className="font-medium">
-                    {formatPeso(computedSalary[salaryComputation.key])}
-                  </span>
-                </div>
-              ))}
+              {computation.computationLabelKeys.salaryComputations.map(
+                (salaryComputation) => (
+                  <div
+                    key={salaryComputation.key}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-gray-700">
+                      {salaryComputation.label}
+                    </span>
+                    <span className="font-medium">
+                      {formatPeso(
+                        computation.computedSalary[salaryComputation.key]
+                      )}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
@@ -59,19 +52,23 @@ const ComputationSummary = ({
               Contributions
             </h3>
             <div className="space-y-3">
-              {contributionComputations.map((contributionComputation) => (
-                <div
-                  key={contributionComputation.key}
-                  className="flex justify-between items-center"
-                >
-                  <span className="text-gray-700">
-                    {contributionComputation.label}
-                  </span>
-                  <span className="font-medium">
-                    {formatPeso(computedSalary[contributionComputation.key])}
-                  </span>
-                </div>
-              ))}
+              {computation.computationLabelKeys.contributionComputations.map(
+                (contributionComputation) => (
+                  <div
+                    key={contributionComputation.key}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-gray-700">
+                      {contributionComputation.label}
+                    </span>
+                    <span className="font-medium">
+                      {formatPeso(
+                        computation.computedSalary[contributionComputation.key]
+                      )}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
@@ -79,17 +76,23 @@ const ComputationSummary = ({
           <div>
             <h3 className="font-semibold text-lg mb-3 border-b pb-1"></h3>
             <div className="space-y-3">
-              {totalDeductions.map((totalDeduction) => (
-                <div
-                  key={totalDeduction.key}
-                  className="flex justify-between items-center"
-                >
-                  <span className="text-gray-700">{totalDeduction.label}</span>
-                  <span className="font-medium">
-                    {formatPeso(computedSalary[totalDeduction.key])}
-                  </span>
-                </div>
-              ))}
+              {computation.computationLabelKeys.totalDeductions.map(
+                (totalDeduction) => (
+                  <div
+                    key={totalDeduction.key}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-gray-700">
+                      {totalDeduction.label}
+                    </span>
+                    <span className="font-medium">
+                      {formatPeso(
+                        computation.computedSalary[totalDeduction.key]
+                      )}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
@@ -99,19 +102,23 @@ const ComputationSummary = ({
               Total Computations
             </h3>
             <div className="space-y-3">
-              {totalComputations.map((totalComputation) => (
-                <div
-                  key={totalComputation.key}
-                  className="flex justify-between items-center"
-                >
-                  <span className="text-gray-700">
-                    {totalComputation.label}
-                  </span>
-                  <span className="font-medium">
-                    {formatPeso(computedSalary[totalComputation.key])}
-                  </span>
-                </div>
-              ))}
+              {computation.computationLabelKeys.totalComputations.map(
+                (totalComputation) => (
+                  <div
+                    key={totalComputation.key}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-gray-700">
+                      {totalComputation.label}
+                    </span>
+                    <span className="font-medium">
+                      {formatPeso(
+                        computation.computedSalary[totalComputation.key]
+                      )}
+                    </span>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>

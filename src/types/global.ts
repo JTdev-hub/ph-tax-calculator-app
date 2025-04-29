@@ -44,6 +44,18 @@ export interface ComputedSalary {
   totalContribution: number;
 }
 
+export interface ComputationLabelKeys {
+  salaryComputations: ComputationKeys[];
+  contributionComputations: ComputationKeys[];
+  totalDeductions: ComputationKeys[];
+  totalComputations: ComputationKeys[];
+}
+
+export interface Computations {
+  computationLabelKeys: ComputationLabelKeys;
+  computedSalary: ComputedSalary;
+}
+
 export const defaultComputedSalary: ComputedSalary = {
   salary: 0,
   taxableIncome: 0,
