@@ -9,6 +9,7 @@ import {
 } from "../constants/Constants";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import { PERIOD } from "../constants/Constants";
+import InputBox from "./InputBox";
 
 interface Props {
   onCompute: (computedSalary: ComputedSalary) => void;
@@ -16,17 +17,20 @@ interface Props {
 const Parameters = ({ onCompute }: Props) => {
   let salaryObj = salary(defaultSalaryInformation);
   const [salaryInput, setSalaryInput] = useState<string>("");
+  const [nonTaxableAllownace, setNonTaxableAllowance] = useState<string>("");
   const [periodSelect, setPeriodSelect] = useState<number>(1);
 
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = event.target.value.replace(/,/g, ""); // remove commas\
-    const number = Number(rawValue);
-    if (!isNaN(number)) {
-      setSalaryInput(number.toLocaleString());
-    } else {
-      setSalaryInput(""); // Reset if not a valid number
-    }
-  };
+  const handleNumericChange =
+    (setValue: React.Dispatch<React.SetStateAction<string>>) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const rawValue = event.target.value.replace(/,/g, ""); // remove commas\
+      const number = Number(rawValue);
+      if (!isNaN(number)) {
+        setValue(number.toLocaleString());
+      } else {
+        setValue(""); // Reset if not a valid number
+      }
+    };
 
   const handleOnSelectChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -41,11 +45,15 @@ const Parameters = ({ onCompute }: Props) => {
     if (salaryInput !== null && salaryInput !== "" && salaryInput !== "0") {
       salaryObj = salary({
         salary: parseInt(salaryInput.replace(/,/g, ""), 10),
+        nonTaxableAllowance: nonTaxableAllownace
+          ? parseInt(nonTaxableAllownace.replace(/,/g, ""), 10)
+          : 0,
         period: periodSelect,
       });
       onCompute({
         taxableIncome: salaryObj.computeTaxableIncome(),
         salary: salaryObj.salary,
+        nonTaxableAllowance: salaryObj.nonTaxableAllowance,
         monthlyEstimatedTax: salaryObj.computeMonthlyTax(),
         sssContribution: salaryObj.computeSSSContribution(),
         pagIbigContribution: salaryObj.computePagIbigContribution(),
@@ -60,10 +68,13 @@ const Parameters = ({ onCompute }: Props) => {
   const handleReset = () => {
     if (salaryInput) {
       setSalaryInput("");
+      setNonTaxableAllowance("");
+      setPeriodSelect(1);
     }
     salaryObj = salary(defaultSalaryInformation);
     onCompute(defaultComputedSalary);
   };
+
   return (
     <>
       <Card className="bg-gray-300/40 p-6 rounded-lg shadow-lg">
@@ -73,27 +84,16 @@ const Parameters = ({ onCompute }: Props) => {
             Please input your salary information
           </p>
 
-          <div className="mb-6">
-            <label
-              htmlFor="basicPay"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Basic Pay
-            </label>
-            <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <TbCurrencyPeso className="text-black" size={20} />
-              </div>
-              <input
-                id="basicPay"
-                placeholder="0"
-                className="block w-full bg-white rounded-md border border-gray-300 pl-10 pr-3 py-3 text-gray-900 placeholder-gray-400  focus:border-purple-500 sm:text-sm"
-                value={salaryInput}
-                onChange={handleOnChange}
-                inputMode="numeric"
-              />
-            </div>
-          </div>
+          <InputBox
+            inputBox={{
+              id: "basicPay",
+              fieldName: "Basic Pay",
+              value: salaryInput,
+            }}
+            handleOnChange={handleNumericChange(setSalaryInput)}
+          >
+            {<TbCurrencyPeso className="text-black" size={20} />}
+          </InputBox>
 
           <div className="mb-6">
             <label
@@ -123,6 +123,17 @@ const Parameters = ({ onCompute }: Props) => {
               />
             </div>
           </div>
+
+          <InputBox
+            inputBox={{
+              id: "nonTaxableAllowance",
+              fieldName: "Non-taxable Allowance",
+              value: nonTaxableAllownace,
+            }}
+            handleOnChange={handleNumericChange(setNonTaxableAllowance)}
+          >
+            {<TbCurrencyPeso className="text-black" size={20} />}
+          </InputBox>
 
           <div className="flex justify-end items-center">
             <button

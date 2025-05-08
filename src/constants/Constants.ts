@@ -8,6 +8,7 @@ import {
 
 export const salaryComputations: ComputationKeys[] = [
   { label: "Basic Pay", key: "salary" },
+  { label: "Non-taxable Allowance", key: "nonTaxableAllowance" },
   { label: "Taxable Income", key: "taxableIncome" },
   { label: "Withholding Tax", key: "monthlyEstimatedTax" },
 ];
@@ -36,6 +37,7 @@ export const computationLabelKeys: ComputationLabelKeys = {
 
 export const defaultComputedSalary: ComputedSalary = {
   salary: 0,
+  nonTaxableAllowance: 0,
   taxableIncome: 0,
   monthlyEstimatedTax: 0,
   sssContribution: 0,
@@ -53,5 +55,6 @@ export const PERIOD: Period[] = [
 
 export const defaultSalaryInformation: SalaryInformation = {
   salary: 0,
+  nonTaxableAllowance: 0,
   period: 1,
 };
