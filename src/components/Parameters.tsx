@@ -16,7 +16,7 @@ interface Props {
 const Parameters = ({ onCompute }: Props) => {
   let salaryObj = salary(defaultSalaryInformation);
   const [salaryInput, setSalaryInput] = useState<string>("");
-  const [periodSelect, setPeriodSelect] = useState<number>(0);
+  const [periodSelect, setPeriodSelect] = useState<number>(1);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value.replace(/,/g, ""); // remove commas\

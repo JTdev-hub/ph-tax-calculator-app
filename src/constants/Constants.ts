@@ -53,5 +53,5 @@ export const PERIOD: Period[] = [
 
 export const defaultSalaryInformation: SalaryInformation = {
   salary: 0,
-  period: 0,
+  period: 1,
 };

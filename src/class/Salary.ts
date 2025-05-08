@@ -9,15 +9,14 @@ import {
 class Salary {
   _salary: number;
   _annualSalary: number;
-  _period: number;
+
   applicableTaxBracket: TaxBracket;
   applicablePhilhealthBracket: PhilhealthBracket;
   applicablePagIbigBracket: PagIbigBracket;
   applicableSSSBracket: SocialSecurityBracket;
 
   constructor(salary: SalaryInformation) {
-    this._salary = salary.salary as number;
-    this._period = salary.period;
+    this._salary = (salary.salary as number) * salary.period;
     this._annualSalary = this._salary * 12;
     this.applicableTaxBracket = this.findBracket(
       Salary.TAX_BRACKETS,
@@ -221,7 +220,7 @@ class Salary {
   }
 
   get salary(): number {
-    return this._salary * this._period;
+    return this._salary;
   }
 
   get annualSalary(): number {
