@@ -1,15 +1,14 @@
 import Heading from "./Heading";
 import { useState } from "react";
 
-import {
-  Computations,
-  ComputedSalary,
-  defaultComputedSalary,
-} from "../types/global";
+import { Computations, ComputedSalary } from "../types/global";
 
 import Parameters from "./Parameters";
 import ComputationSummary from "./ComputationSummary";
-import { computationLabelKeys } from "../constants/Constants";
+import {
+  computationLabelKeys,
+  defaultComputedSalary,
+} from "../constants/Constants";
 
 const Body = () => {
   const [computedSalary, setComputedSalary] = useState<ComputedSalary>(

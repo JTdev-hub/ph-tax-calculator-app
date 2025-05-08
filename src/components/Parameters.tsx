@@ -2,14 +2,21 @@ import React, { FormEvent, useState } from "react";
 import Card from "./Card";
 import { TbCurrencyPeso } from "react-icons/tb";
 import salary from "../class/Salary";
-import { ComputedSalary, defaultComputedSalary } from "../types/global";
+import { ComputedSalary } from "../types/global";
+import {
+  defaultComputedSalary,
+  defaultSalaryInformation,
+} from "../constants/Constants";
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
+import { PERIOD } from "../constants/Constants";
 
 interface Props {
   onCompute: (computedSalary: ComputedSalary) => void;
 }
 const Parameters = ({ onCompute }: Props) => {
-  let salaryObj = salary(0);
+  let salaryObj = salary(defaultSalaryInformation);
   const [salaryInput, setSalaryInput] = useState<string>("");
+  const [periodSelect, setPeriodSelect] = useState<number>(0);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value.replace(/,/g, ""); // remove commas\
@@ -20,11 +27,22 @@ const Parameters = ({ onCompute }: Props) => {
       setSalaryInput(""); // Reset if not a valid number
     }
   };
+
+  const handleOnSelectChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = Number(event.target.value);
+    setPeriodSelect(selectedValue);
+  };
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     if (salaryInput !== null && salaryInput !== "" && salaryInput !== "0") {
-      salaryObj = salary(parseInt(salaryInput.replace(/,/g, ""), 10));
+      salaryObj = salary({
+        salary: parseInt(salaryInput.replace(/,/g, ""), 10),
+        period: periodSelect,
+      });
       onCompute({
         taxableIncome: salaryObj.computeTaxableIncome(),
         salary: salaryObj.salary,
@@ -43,7 +61,7 @@ const Parameters = ({ onCompute }: Props) => {
     if (salaryInput) {
       setSalaryInput("");
     }
-    salaryObj = salary(0);
+    salaryObj = salary(defaultSalaryInformation);
     onCompute(defaultComputedSalary);
   };
   return (
@@ -73,6 +91,35 @@ const Parameters = ({ onCompute }: Props) => {
                 value={salaryInput}
                 onChange={handleOnChange}
                 inputMode="numeric"
+              />
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <label
+              htmlFor="period"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Period
+            </label>
+            <div className="mt-2 grid grid-cols-1">
+              <select
+                id="period"
+                name="period"
+                autoComplete="period"
+                value={periodSelect}
+                onChange={handleOnSelectChange}
+                className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-3 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+              >
+                {PERIOD.map((period, index) => (
+                  <option key={index} value={period.periodValue}>
+                    {period.periodText}
+                  </option>
+                ))}
+              </select>
+              <ChevronDownIcon
+                aria-hidden="true"
+                className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
               />
             </div>
           </div>

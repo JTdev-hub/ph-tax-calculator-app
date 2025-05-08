@@ -1,4 +1,10 @@
-import { ComputationKeys, ComputationLabelKeys } from "../types/global";
+import {
+  ComputationKeys,
+  ComputationLabelKeys,
+  ComputedSalary,
+  Period,
+  SalaryInformation,
+} from "../types/global";
 
 export const salaryComputations: ComputationKeys[] = [
   { label: "Basic Pay", key: "salary" },
@@ -26,4 +32,26 @@ export const computationLabelKeys: ComputationLabelKeys = {
   contributionComputations,
   totalDeductions,
   totalComputations,
+};
+
+export const defaultComputedSalary: ComputedSalary = {
+  salary: 0,
+  taxableIncome: 0,
+  monthlyEstimatedTax: 0,
+  sssContribution: 0,
+  pagIbigContribution: 0,
+  philHealthContribution: 0,
+  netSalary: 0,
+  totalDeductions: 0,
+  totalContribution: 0,
+};
+
+export const PERIOD: Period[] = [
+  { periodValue: 1, periodText: "Monthly" },
+  { periodValue: 2, periodText: "Semi-Monthly" },
+];
+
+export const defaultSalaryInformation: SalaryInformation = {
+  salary: 0,
+  period: 0,
 };

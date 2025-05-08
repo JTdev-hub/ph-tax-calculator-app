@@ -67,3 +67,13 @@ export const defaultComputedSalary: ComputedSalary = {
   totalDeductions: 0,
   totalContribution: 0,
 };
+
+export interface Period {
+  periodValue: number;
+  periodText: string;
+}
+
+export interface SalaryInformation {
+  salary: number | string;
+  period: number;
+}

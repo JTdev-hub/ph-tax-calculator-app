@@ -3,15 +3,40 @@ import {
   PhilhealthBracket,
   PagIbigBracket,
   SocialSecurityBracket,
+  SalaryInformation,
 } from "../types/global";
 
 class Salary {
   _salary: number;
   _annualSalary: number;
+  _period: number;
   applicableTaxBracket: TaxBracket;
   applicablePhilhealthBracket: PhilhealthBracket;
   applicablePagIbigBracket: PagIbigBracket;
   applicableSSSBracket: SocialSecurityBracket;
+
+  constructor(salary: SalaryInformation) {
+    this._salary = salary.salary as number;
+    this._period = salary.period;
+    this._annualSalary = this._salary * 12;
+    this.applicableTaxBracket = this.findBracket(
+      Salary.TAX_BRACKETS,
+      this.annualSalary,
+      true
+    );
+    this.applicableSSSBracket = this.findBracket(
+      Salary.SSS_BRACKET,
+      this.salary
+    );
+    this.applicablePagIbigBracket = this.findBracket(
+      Salary.PAGIBIG_BRACKET,
+      this.salary
+    );
+    this.applicablePhilhealthBracket = this.findBracket(
+      Salary.PHILHEALTH_BRACKET,
+      this.annualSalary
+    );
+  }
 
   private static readonly TAX_BRACKETS: TaxBracket[] = [
     {
@@ -195,30 +220,8 @@ class Salary {
     return bracket;
   }
 
-  constructor(salary: number) {
-    this._salary = salary;
-    this._annualSalary = this._salary * 12;
-    this.applicableTaxBracket = this.findBracket(
-      Salary.TAX_BRACKETS,
-      this.annualSalary,
-      true
-    );
-    this.applicableSSSBracket = this.findBracket(
-      Salary.SSS_BRACKET,
-      this.salary
-    );
-    this.applicablePagIbigBracket = this.findBracket(
-      Salary.PAGIBIG_BRACKET,
-      this.salary
-    );
-    this.applicablePhilhealthBracket = this.findBracket(
-      Salary.PHILHEALTH_BRACKET,
-      this.annualSalary
-    );
-  }
-
   get salary(): number {
-    return this._salary;
+    return this._salary * this._period;
   }
 
   get annualSalary(): number {
@@ -291,6 +294,6 @@ class Salary {
   }
 }
 
-const salary = (salary: number) => new Salary(salary);
+const salary = (salary: SalaryInformation) => new Salary(salary);
 
 export default salary;
