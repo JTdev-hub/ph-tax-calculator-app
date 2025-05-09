@@ -9,6 +9,7 @@ import {
   computationLabelKeys,
   defaultComputedSalary,
 } from "../constants/Constants";
+import SalaryChart from "./SalaryChart";
 
 const Body = () => {
   const [computedSalary, setComputedSalary] = useState<ComputedSalary>(
@@ -30,6 +31,8 @@ const Body = () => {
           <Parameters onCompute={setComputedSalary} />
           {/* Summary Card */}
           <ComputationSummary computation={computation} />
+
+          <SalaryChart computedSalary={computedSalary} />
         </div>
       </div>
     </div>
