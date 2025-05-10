@@ -3,6 +3,7 @@ import {
   ComputationLabelKeys,
   ComputedSalary,
   Period,
+  SalaryAllocation,
   SalaryInformation,
 } from "../types/global";
 
@@ -57,4 +58,10 @@ export const defaultSalaryInformation: SalaryInformation = {
   salary: 0,
   nonTaxableAllowance: 0,
   period: 1,
+};
+
+export const defaultSalaryAllocation: SalaryAllocation = {
+  needs: 0.5,
+  savings: 0.2,
+  wants: 0.3,
 };

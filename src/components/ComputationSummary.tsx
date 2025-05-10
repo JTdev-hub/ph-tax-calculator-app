@@ -10,7 +10,7 @@ const ComputationSummary = ({ computation }: Props) => {
   return (
     <>
       {/* Results Card */}
-      <Card className="bg-gray-300/40 p-6 rounded-lg shadow-lg">
+      <Card className="w-full lg:w-1/3 bg-gray-300/40 p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold text-purple-600 mb-2">
           Computation Summary
         </h2>

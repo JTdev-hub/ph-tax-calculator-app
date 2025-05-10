@@ -77,7 +77,7 @@ const Parameters = ({ onCompute }: Props) => {
 
   return (
     <>
-      <Card className="bg-gray-300/40 p-6 rounded-lg shadow-lg">
+      <Card className="w-full lg:w-1/3 bg-gray-300/40 p-6 rounded-lg shadow-lg">
         <form onSubmit={handleSubmit}>
           <h2 className="text-xl font-bold text-purple-600 mb-2">Parameters</h2>
           <p className="text-gray-700 mb-6">

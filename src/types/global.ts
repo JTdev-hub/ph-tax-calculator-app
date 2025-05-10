@@ -86,3 +86,9 @@ export interface InputBoxProps {
   fieldName: string;
   value: string;
 }
+
+export interface SalaryAllocation {
+  needs: number;
+  savings: number;
+  wants: number;
+}

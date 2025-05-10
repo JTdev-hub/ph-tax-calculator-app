@@ -1,3 +1,4 @@
+import { defaultSalaryAllocation } from "../constants/Constants";
 import { ComputedSalary } from "../types/global";
 import Card from "./Card";
 import { ResponsivePie } from "@nivo/pie";
@@ -9,21 +10,21 @@ interface Props {
 const SalaryChart = ({ computedSalary }: Props) => {
   const data = [
     {
-      id: "needs",
+      id: "Needs",
       label: "Needs",
-      value: computedSalary.netSalary * 0.5,
+      value: computedSalary.netSalary * defaultSalaryAllocation.needs,
       color: "hsl(190, 70%, 50%)",
     },
     {
-      id: "savings",
+      id: "Savings",
       label: "Savings",
-      value: computedSalary.netSalary * 0.3,
+      value: computedSalary.netSalary * defaultSalaryAllocation.savings,
       color: "hsl(145, 60%, 50%)",
     },
     {
-      id: "wants",
+      id: "Wants",
       label: "Wants",
-      value: computedSalary.netSalary * 0.2,
+      value: computedSalary.netSalary * defaultSalaryAllocation.wants,
       color: "hsl(40, 90%, 55%)",
     },
   ];
@@ -57,7 +58,7 @@ const SalaryChart = ({ computedSalary }: Props) => {
   };
 
   return (
-    <Card className="bg-gray-300/40 p-4 sm:p-6 rounded-lg shadow-lg">
+    <Card className="w-full lg:w-1/3 bg-gray-300/40 p-6 rounded-lg shadow-lg">
       <h2 className="text-lg sm:text-xl font-bold text-purple-600 mb-4">
         Salary Allocation Breakdown
       </h2>
@@ -70,11 +71,11 @@ const SalaryChart = ({ computedSalary }: Props) => {
           cornerRadius={5}
           activeOuterRadiusOffset={8}
           colors={{ datum: "data.color" }}
-          borderWidth={1}
+          borderWidth={3}
           borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
           arcLinkLabelsSkipAngle={10}
           arcLinkLabelsTextColor={{ from: "color" }}
-          arcLinkLabelsThickness={2}
+          arcLinkLabelsThickness={1}
           arcLinkLabelsColor={{ from: "color" }}
           arcLabelsSkipAngle={10}
           arcLabelsTextColor={{ from: "color", modifiers: [["darker", 2]] }}
@@ -106,10 +107,10 @@ const SalaryChart = ({ computedSalary }: Props) => {
               direction: "row",
               justify: false,
               translateY: 56,
-              itemWidth: 60,
+              itemWidth: 70,
               itemHeight: 14,
               itemTextColor: "#555",
-              symbolSize: 12,
+              symbolSize: 10,
               symbolShape: "circle",
               effects: [
                 {
@@ -121,13 +122,7 @@ const SalaryChart = ({ computedSalary }: Props) => {
               ],
             },
           ]}
-          layers={[
-            "arcs",
-            "arcLabels",
-            "arcLinkLabels",
-            "legends",
-            CenteredMetric,
-          ]}
+          layers={["arcs", "arcLabels", "legends", CenteredMetric]}
         />
       </div>
     </Card>

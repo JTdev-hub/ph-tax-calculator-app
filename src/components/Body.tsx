@@ -25,13 +25,12 @@ const Body = () => {
     <div className="min-h-screen bg-gray-50 font-serrat">
       <div className="container mx-auto px-4 py-8">
         <Heading />
-
-        <div className="flex flex-col gap-6 mt-8">
+        <div className="flex flex-col lg:flex-row  gap-5 mt-8">
           {/* Input Card */}
           <Parameters onCompute={setComputedSalary} />
           {/* Summary Card */}
           <ComputationSummary computation={computation} />
-
+          {/* Salary Chart Allocation Card */}
           <SalaryChart computedSalary={computedSalary} />
         </div>
       </div>
