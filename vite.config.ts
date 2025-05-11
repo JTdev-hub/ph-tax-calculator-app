@@ -22,12 +22,12 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "ph-tax.png",
+            src: "ph-tax.PNG",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "ph-tax.png",
+            src: "ph-tax.PNG",
             sizes: "512x512",
             type: "image/png",
           },
