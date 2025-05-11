@@ -10,6 +10,7 @@ class Salary {
   _salary: number;
   _annualSalary: number;
   _nonTaxableAllowance: number;
+  _taxableAllowance: number;
 
   applicableTaxBracket: TaxBracket;
   applicablePhilhealthBracket: PhilhealthBracket;
@@ -19,6 +20,7 @@ class Salary {
   constructor(salary: SalaryInformation) {
     this._salary = salary.salary * salary.period;
     this._nonTaxableAllowance = salary.nonTaxableAllowance * salary.period;
+    this._taxableAllowance = salary.taxableAllowance * salary.period;
     this._annualSalary = this._salary * 12;
     this.applicableTaxBracket = this.findBracket(
       Salary.TAX_BRACKETS,
@@ -229,6 +231,10 @@ class Salary {
     return this._nonTaxableAllowance;
   }
 
+  get taxableAllowance(): number {
+    return this._taxableAllowance;
+  }
+
   get annualSalary(): number {
     return this._annualSalary;
   }
@@ -268,7 +274,8 @@ class Salary {
 
   computeTaxableIncome(): number {
     const taxableIncome =
-      this.salary -
+      this.salary +
+      this.taxableAllowance -
       (this.computeSSSContribution() +
         this.computePagIbigContribution() +
         this.computePhilHealthContribution());

@@ -35,6 +35,7 @@ export interface ComputationKeys {
 export interface ComputedSalary {
   salary: number;
   nonTaxableAllowance: number;
+  taxableAllowance: number;
   taxableIncome: number;
   monthlyEstimatedTax: number;
   sssContribution: number;
@@ -60,6 +61,7 @@ export interface Computations {
 export const defaultComputedSalary: ComputedSalary = {
   salary: 0,
   nonTaxableAllowance: 0,
+  taxableAllowance: 0,
   taxableIncome: 0,
   monthlyEstimatedTax: 0,
   sssContribution: 0,
@@ -78,6 +80,7 @@ export interface Period {
 export interface SalaryInformation {
   salary: number;
   nonTaxableAllowance: number;
+  taxableAllowance: number;
   period: number;
 }
 

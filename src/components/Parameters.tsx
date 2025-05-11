@@ -18,6 +18,7 @@ const Parameters = ({ onCompute }: Props) => {
   let salaryObj = salary(defaultSalaryInformation);
   const [salaryInput, setSalaryInput] = useState<string>("");
   const [nonTaxableAllownace, setNonTaxableAllowance] = useState<string>("");
+  const [taxableAllowance, setTaxableAllowance] = useState<string>("");
   const [periodSelect, setPeriodSelect] = useState<number>(1);
 
   const handleNumericChange =
@@ -48,12 +49,16 @@ const Parameters = ({ onCompute }: Props) => {
         nonTaxableAllowance: nonTaxableAllownace
           ? parseInt(nonTaxableAllownace.replace(/,/g, ""), 10)
           : 0,
+        taxableAllowance: taxableAllowance
+          ? parseInt(taxableAllowance.replace(/,/g, ""), 10)
+          : 0,
         period: periodSelect,
       });
       onCompute({
         taxableIncome: salaryObj.computeTaxableIncome(),
         salary: salaryObj.salary,
         nonTaxableAllowance: salaryObj.nonTaxableAllowance,
+        taxableAllowance: salaryObj.taxableAllowance,
         monthlyEstimatedTax: salaryObj.computeMonthlyTax(),
         sssContribution: salaryObj.computeSSSContribution(),
         pagIbigContribution: salaryObj.computePagIbigContribution(),
@@ -83,7 +88,7 @@ const Parameters = ({ onCompute }: Props) => {
           <p className="text-gray-700 mb-6">
             Please input your salary information
           </p>
-
+          {/*Basic Pay InputBox */}
           <InputBox
             inputBox={{
               id: "basicPay",
@@ -91,6 +96,30 @@ const Parameters = ({ onCompute }: Props) => {
               value: salaryInput,
             }}
             handleOnChange={handleNumericChange(setSalaryInput)}
+          >
+            {<TbCurrencyPeso className="text-black" size={20} />}
+          </InputBox>
+
+          {/*Non-Taxable Allowance InputBox */}
+          <InputBox
+            inputBox={{
+              id: "nonTaxableAllowance",
+              fieldName: "Non-taxable Allowance",
+              value: nonTaxableAllownace,
+            }}
+            handleOnChange={handleNumericChange(setNonTaxableAllowance)}
+          >
+            {<TbCurrencyPeso className="text-black" size={20} />}
+          </InputBox>
+
+          {/*Taxable Allowance InputBox */}
+          <InputBox
+            inputBox={{
+              id: "taxableAllowance",
+              fieldName: "Taxable Allowance",
+              value: taxableAllowance,
+            }}
+            handleOnChange={handleNumericChange(setTaxableAllowance)}
           >
             {<TbCurrencyPeso className="text-black" size={20} />}
           </InputBox>
@@ -123,17 +152,6 @@ const Parameters = ({ onCompute }: Props) => {
               />
             </div>
           </div>
-
-          <InputBox
-            inputBox={{
-              id: "nonTaxableAllowance",
-              fieldName: "Non-taxable Allowance",
-              value: nonTaxableAllownace,
-            }}
-            handleOnChange={handleNumericChange(setNonTaxableAllowance)}
-          >
-            {<TbCurrencyPeso className="text-black" size={20} />}
-          </InputBox>
 
           <div className="flex justify-end items-center">
             <button
