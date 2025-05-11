@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["ph-tax.PNG"],
+      //includeAssets: ["ph-tax.PNG"],
       manifest: {
         name: "PH Tax Calculator",
         short_name: "PHTaxApp",
