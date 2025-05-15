@@ -64,6 +64,7 @@ const Parameters = ({ onCompute }: Props) => {
         pagIbigContribution: salaryObj.computePagIbigContribution(),
         philHealthContribution: salaryObj.computePhilHealthContribution(),
         netSalary: salaryObj.computeNetSalary(),
+        dailySalary: salaryObj.computeDailyRate(),
         totalDeductions: salaryObj.computeTotalDeductions(),
         totalContribution: salaryObj.computeContributionTotal(),
       });

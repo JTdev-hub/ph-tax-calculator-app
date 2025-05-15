@@ -42,6 +42,7 @@ export interface ComputedSalary {
   pagIbigContribution: number;
   philHealthContribution: number;
   netSalary: number;
+  dailySalary: number;
   totalDeductions: number;
   totalContribution: number;
 }
@@ -58,19 +59,7 @@ export interface Computations {
   computedSalary: ComputedSalary;
 }
 
-export const defaultComputedSalary: ComputedSalary = {
-  salary: 0,
-  nonTaxableAllowance: 0,
-  taxableAllowance: 0,
-  taxableIncome: 0,
-  monthlyEstimatedTax: 0,
-  sssContribution: 0,
-  pagIbigContribution: 0,
-  philHealthContribution: 0,
-  netSalary: 0,
-  totalDeductions: 0,
-  totalContribution: 0,
-};
+
 
 export interface Period {
   periodValue: number;

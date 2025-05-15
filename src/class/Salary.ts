@@ -239,6 +239,10 @@ class Salary {
     return this._annualSalary;
   }
 
+  computeDailyRate(): number{
+    return this._salary / 22
+  }
+
   computeSSSContribution(): number {
     return this.applicableSSSBracket.regularSS + this.applicableSSSBracket.mpf;
   }

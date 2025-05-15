@@ -12,8 +12,8 @@ export const salaryComputations: ComputationKeys[] = [
   { label: "Non-taxable Allowance", key: "nonTaxableAllowance" },
   { label: "Taxable Allowance", key: "taxableAllowance" },
   { label: "Taxable Income", key: "taxableIncome" },
-
   { label: "Withholding Tax", key: "monthlyEstimatedTax" },
+  { label: "Daily Rate", key: "dailySalary"}
 ];
 
 export const contributionComputations: ComputationKeys[] = [
@@ -48,6 +48,7 @@ export const defaultComputedSalary: ComputedSalary = {
   pagIbigContribution: 0,
   philHealthContribution: 0,
   netSalary: 0,
+  dailySalary: 0,
   totalDeductions: 0,
   totalContribution: 0,
 };
