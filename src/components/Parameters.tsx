@@ -105,7 +105,7 @@ const Parameters = ({ onCompute }: Props) => {
           <InputBox
             inputBox={{
               id: "nonTaxableAllowance",
-              fieldName: "Non-taxable Allowance",
+              fieldName: "Non-taxable Income",
               value: nonTaxableAllownace,
             }}
             handleOnChange={handleNumericChange(setNonTaxableAllowance)}
@@ -117,7 +117,7 @@ const Parameters = ({ onCompute }: Props) => {
           <InputBox
             inputBox={{
               id: "taxableAllowance",
-              fieldName: "Taxable Allowance",
+              fieldName: "Taxable Income",
               value: taxableAllowance,
             }}
             handleOnChange={handleNumericChange(setTaxableAllowance)}

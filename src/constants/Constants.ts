@@ -9,9 +9,9 @@ import {
 
 export const salaryComputations: ComputationKeys[] = [
   { label: "Basic Pay", key: "salary" },
-  { label: "Non-taxable Allowance", key: "nonTaxableAllowance" },
-  { label: "Taxable Allowance", key: "taxableAllowance" },
-  { label: "Taxable Income", key: "taxableIncome" },
+  { label: "Non-taxable Income", key: "nonTaxableAllowance" },
+  { label: "Taxable Income", key: "taxableAllowance" },
+  { label: "Taxable Compensation Income", key: "taxableIncome" },
   { label: "Withholding Tax", key: "monthlyEstimatedTax" },
   { label: "Daily Rate", key: "dailySalary"}
 ];
