@@ -17,14 +17,8 @@ A lightweight, web-based tool designed to help individuals in the Philippines es
 
 ## 🛠️ Technologies Used
 
-- **Frontend**: HTML, CSS, TypeScript, TailwindCSS
+- **Frontend**: React, TypeScript, TailwindCSS
 - **Deployment**: Vercel
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
