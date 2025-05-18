@@ -6,10 +6,12 @@ import { ComputedSalary } from "../types/global";
 import {
   defaultComputedSalary,
   defaultSalaryInformation,
+  SUMMARY_COMPUTATION,
 } from "../constants/Constants";
-import { ChevronDownIcon } from "@heroicons/react/16/solid";
+
 import { PERIOD } from "../constants/Constants";
 import InputBox from "./InputBox";
+import SelectionBox from "./SelectionBox";
 
 interface Props {
   onCompute: (computedSalary: ComputedSalary) => void;
@@ -20,6 +22,7 @@ const Parameters = ({ onCompute }: Props) => {
   const [nonTaxableAllownace, setNonTaxableAllowance] = useState<string>("");
   const [taxableAllowance, setTaxableAllowance] = useState<string>("");
   const [periodSelect, setPeriodSelect] = useState<number>(1);
+  const [summarySelect, setSummarySelect] = useState<number>(1);
 
   const handleNumericChange =
     (setValue: React.Dispatch<React.SetStateAction<string>>) =>
@@ -33,12 +36,12 @@ const Parameters = ({ onCompute }: Props) => {
       }
     };
 
-  const handleOnSelectChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedValue = Number(event.target.value);
-    setPeriodSelect(selectedValue);
-  };
+  const handleOnSelectChange =
+    (setValue: React.Dispatch<React.SetStateAction<number>>) =>
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedValue = Number(event.target.value);
+      setValue(selectedValue);
+    };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -125,34 +128,35 @@ const Parameters = ({ onCompute }: Props) => {
             {<TbCurrencyPeso className="text-black" size={20} />}
           </InputBox>
 
-          <div className="mb-6">
-            <label
-              htmlFor="period"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Period
-            </label>
-            <div className="mt-2 grid grid-cols-1">
-              <select
-                id="period"
-                name="period"
-                autoComplete="period"
-                value={periodSelect}
-                onChange={handleOnSelectChange}
-                className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-3 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-              >
-                {PERIOD.map((period, index) => (
-                  <option key={index} value={period.periodValue}>
-                    {period.periodText}
-                  </option>
-                ))}
-              </select>
-              <ChevronDownIcon
-                aria-hidden="true"
-                className="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4"
-              />
-            </div>
-          </div>
+          <SelectionBox
+            selectionBox={{
+              id: "period",
+              fieldName: "Period",
+              value: periodSelect,
+            }}
+            handleOnChange={handleOnSelectChange(setPeriodSelect)}
+          >
+            {PERIOD.map((period, index) => (
+              <option key={index} value={period.periodValue}>
+                {period.periodText}
+              </option>
+            ))}
+          </SelectionBox>
+
+          <SelectionBox
+            selectionBox={{
+              id: "summary",
+              fieldName: "Computation Summary Calculation",
+              value: summarySelect,
+            }}
+            handleOnChange={handleOnSelectChange(setSummarySelect)}
+          >
+            {SUMMARY_COMPUTATION.map((summaryComp, index) => (
+              <option key={index} value={summaryComp.summaryCompValue}>
+                {summaryComp.summaryCompText}
+              </option>
+            ))}
+          </SelectionBox>
 
           <div className="flex justify-end items-center">
             <button

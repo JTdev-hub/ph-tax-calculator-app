@@ -5,6 +5,7 @@ import {
   Period,
   SalaryAllocation,
   SalaryInformation,
+  SummaryComputation,
 } from "../types/global";
 
 export const salaryComputations: ComputationKeys[] = [
@@ -13,7 +14,7 @@ export const salaryComputations: ComputationKeys[] = [
   { label: "Taxable Income", key: "taxableAllowance" },
   { label: "Taxable Compensation Income", key: "taxableIncome" },
   { label: "Withholding Tax", key: "monthlyEstimatedTax" },
-  { label: "Daily Rate", key: "dailySalary"}
+  { label: "Daily Rate", key: "dailySalary" },
 ];
 
 export const contributionComputations: ComputationKeys[] = [
@@ -56,6 +57,12 @@ export const defaultComputedSalary: ComputedSalary = {
 export const PERIOD: Period[] = [
   { periodValue: 1, periodText: "Monthly" },
   { periodValue: 2, periodText: "Semi-Monthly" },
+];
+
+export const SUMMARY_COMPUTATION: SummaryComputation[] = [
+  { summaryCompValue: 12, summaryCompText: "Annual" },
+  { summaryCompValue: 1, summaryCompText: "Monthly" },
+  { summaryCompValue: 2, summaryCompText: "Semi-Monthly" },
 ];
 
 export const defaultSalaryInformation: SalaryInformation = {

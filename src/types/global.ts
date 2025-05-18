@@ -59,11 +59,14 @@ export interface Computations {
   computedSalary: ComputedSalary;
 }
 
-
-
 export interface Period {
   periodValue: number;
   periodText: string;
+}
+
+export interface SummaryComputation {
+  summaryCompValue: number;
+  summaryCompText: string;
 }
 
 export interface SalaryInformation {
@@ -77,6 +80,12 @@ export interface InputBoxProps {
   id: string;
   fieldName: string;
   value: string;
+}
+
+export interface SelectionBoxProps {
+  id: string;
+  fieldName: string;
+  value: number;
 }
 
 export interface SalaryAllocation {
