@@ -1,33 +1,75 @@
 import { defaultSalaryAllocation } from "../constants/Constants";
-import { ComputedSalary } from "../types/global";
+import { ComputedSalary, SalaryAllocation } from "../types/global";
 import Card from "./Card";
 import { ResponsivePie } from "@nivo/pie";
+import InputBox from "./InputBox";
+import { useState, useMemo } from "react";
+import { TbPercentage } from "react-icons/tb";
 
 interface Props {
   computedSalary: ComputedSalary;
 }
 
 const SalaryChart = ({ computedSalary }: Props) => {
-  const data = [
-    {
-      id: "Needs",
-      label: "Needs",
-      value: computedSalary.netSalary * defaultSalaryAllocation.needs,
-      color: "hsl(190, 70%, 50%)",
-    },
-    {
-      id: "Savings",
-      label: "Savings",
-      value: computedSalary.netSalary * defaultSalaryAllocation.savings,
-      color: "hsl(145, 60%, 50%)",
-    },
-    {
-      id: "Wants",
-      label: "Wants",
-      value: computedSalary.netSalary * defaultSalaryAllocation.wants,
-      color: "hsl(40, 90%, 55%)",
-    },
-  ];
+  const [allocation, setAllocation] = useState<SalaryAllocation>({
+    needs: defaultSalaryAllocation.needs,
+    savings: defaultSalaryAllocation.savings,
+    wants: defaultSalaryAllocation.wants,
+  });
+  const [error, setError] = useState<string | null>(null);
+
+  // Memoize pie chart data to avoid recalculation on every render
+  const data = useMemo(
+    () => [
+      {
+        id: "Needs",
+        label: "Needs",
+        value: computedSalary.netSalary * allocation.needs,
+        color: "hsl(190, 70%, 50%)",
+      },
+      {
+        id: "Savings",
+        label: "Savings",
+        value: computedSalary.netSalary * allocation.savings,
+        color: "hsl(145, 60%, 50%)",
+      },
+      {
+        id: "Wants",
+        label: "Wants",
+        value: computedSalary.netSalary * allocation.wants,
+        color: "hsl(40, 90%, 55%)",
+      },
+    ],
+    [
+      computedSalary.netSalary,
+      allocation.needs,
+      allocation.savings,
+      allocation.wants,
+    ]
+  );
+
+  // Handle allocation input changes
+  const handleAllocationChange =
+    (key: keyof SalaryAllocation) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const rawValue = event.target.value.replace(/,/g, ""); // Remove commas
+      const number = Number(rawValue) / 100; // Convert percentage to decimal
+      if (!isNaN(number) && number >= 0 && number <= 1) {
+        setAllocation((prev) => {
+          const newAllocation = { ...prev, [key]: number };
+          const total =
+            newAllocation.needs + newAllocation.savings + newAllocation.wants;
+          if (total > 1) {
+            setError("Total allocation cannot exceed 100%");
+            return prev; // Prevent update
+          }
+          setError(null);
+          return newAllocation;
+        });
+      } else {
+        setError("Please enter a valid percentage between 0 and 100");
+      }
+    };
 
   const CenteredMetric = ({
     centerX,
@@ -124,6 +166,22 @@ const SalaryChart = ({ computedSalary }: Props) => {
           ]}
           layers={["arcs", "arcLabels", "legends", CenteredMetric]}
         />
+      </div>
+      {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
+      <div className="flex flex-row gap-4 mt-4">
+        {(["savings", "needs", "wants"] as const).map((key) => (
+          <InputBox
+            key={key}
+            inputBox={{
+              id: key,
+              fieldName: key.charAt(0).toUpperCase() + key.slice(1),
+              value: (allocation[key] * 100).toString(),
+            }}
+            handleOnChange={handleAllocationChange(key)}
+          >
+            {<TbPercentage className="text-black" size={20} />}
+          </InputBox>
+        ))}
       </div>
     </Card>
   );

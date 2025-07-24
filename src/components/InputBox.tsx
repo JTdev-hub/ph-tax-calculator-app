@@ -22,7 +22,7 @@ const InputBox = ({ children, inputBox, handleOnChange }: Props) => {
         </div>
         <input
           id={inputBox.id}
-          placeholder="0"
+          placeholder={inputBox.placeholder ? inputBox.placeholder : "0"}
           className="block w-full bg-white rounded-md border border-gray-300 pl-10 pr-3 py-3 text-gray-900 placeholder-gray-400  focus:border-purple-500 sm:text-sm"
           value={handleOnChange ? inputBox.value : undefined}
           onChange={handleOnChange ? handleOnChange : undefined}

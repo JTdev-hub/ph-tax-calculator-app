@@ -74,6 +74,6 @@ export const defaultSalaryInformation: SalaryInformation = {
 
 export const defaultSalaryAllocation: SalaryAllocation = {
   needs: 0.5,
-  savings: 0.2,
-  wants: 0.3,
+  savings: 0.3,
+  wants: 0.2,
 };

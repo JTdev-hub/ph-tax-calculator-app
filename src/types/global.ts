@@ -80,6 +80,7 @@ export interface InputBoxProps {
   id: string;
   fieldName: string;
   value: string;
+  placeholder?: string;
 }
 
 export interface SelectionBoxProps {
