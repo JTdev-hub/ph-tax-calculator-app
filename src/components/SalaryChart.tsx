@@ -37,7 +37,7 @@ const SalaryChart = ({ computedSalary }: Props) => {
         id: "Wants",
         label: "Wants",
         value: computedSalary.netSalary * allocation.wants,
-        color: "hsl(204, 94%, 94%)", // Light blue
+        color: "hsl(204, 94%, 74%)", // Light blue
       },
     ],
     [

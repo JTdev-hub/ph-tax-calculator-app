@@ -131,7 +131,7 @@ const Parameters = ({ onCompute }: Props) => {
   }, [onCompute]);
 
   return (
-    <Card className="h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 sticky top-8">
+    <Card className="h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
       <form onSubmit={handleSubmit} className="h-full flex flex-col">
         {/* Header Section */}
         <div className="mb-6">
