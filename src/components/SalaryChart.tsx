@@ -45,7 +45,7 @@ const SalaryChart = ({ computedSalary }: Props) => {
       allocation.needs,
       allocation.savings,
       allocation.wants,
-    ]
+    ],
   );
 
   // Calculate totals for display
@@ -284,8 +284,9 @@ const SalaryChart = ({ computedSalary }: Props) => {
                 id: key,
                 fieldName: key.charAt(0).toUpperCase() + key.slice(1),
                 value: (allocation[key] * 100).toFixed(0),
+                type: "SalaryChart",
               }}
-              handleOnChange={handleAllocationChange(key)}
+              onChange={handleAllocationChange(key)}
             >
               <TbPercentage className="text-gray-500" size={20} />
             </InputBox>

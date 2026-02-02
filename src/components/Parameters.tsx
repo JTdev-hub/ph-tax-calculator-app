@@ -50,20 +50,11 @@ const Parameters = ({ onCompute }: Props) => {
   const [error, setError] = useState<string | null>(null);
 
   const handleNumericChange = useCallback(
-    (key: keyof FormState) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = event.target.value.replace(/,/g, "");
-      const number = Number(rawValue);
-      if (!isNaN(number) && number >= 0) {
-        setFormState((prev) => ({
-          ...prev,
-          [key]: number.toLocaleString(),
-        }));
-        setError(null);
-      } else {
-        setError("Please enter a valid non-negative number");
-      }
+    (key: keyof FormState) => (raw: string) => {
+      setFormState((prev) => ({ ...prev, [key]: raw }));
+      setError(null);
     },
-    []
+    [],
   );
 
   const handleOnSelectChange = useCallback(
@@ -77,13 +68,14 @@ const Parameters = ({ onCompute }: Props) => {
         setError(null);
       }
     },
-    []
+    [],
   );
 
   const handleSubmit = useCallback(
     (event: FormEvent) => {
       event.preventDefault();
       const parsedSalary = parseFloat(formState.salaryInput.replace(/,/g, ""));
+      console.log(parsedSalary);
       if (isNaN(parsedSalary) || parsedSalary <= 0) {
         setError("Basic pay must be a positive number");
         return;
@@ -115,7 +107,7 @@ const Parameters = ({ onCompute }: Props) => {
       });
       setError(null);
     },
-    [formState, onCompute]
+    [formState, onCompute],
   );
 
   const handleReset = useCallback(() => {
@@ -175,8 +167,9 @@ const Parameters = ({ onCompute }: Props) => {
                 id,
                 fieldName,
                 value: formState[stateKey].toString(),
+                type: "Parameters",
               }}
-              handleOnChange={handleNumericChange(stateKey)}
+              onValueChange={handleNumericChange(stateKey)}
             >
               <TbCurrencyPeso className="text-gray-500" size={20} />
             </InputBox>

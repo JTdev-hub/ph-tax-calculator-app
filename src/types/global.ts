@@ -81,6 +81,7 @@ export interface InputBoxProps {
   fieldName: string;
   value: string;
   placeholder?: string;
+  type: "Parameters" | "SalaryChart";
 }
 
 export interface SelectionBoxProps {
