@@ -19,12 +19,6 @@ export interface PagIbigBracket {
   employeeShare: number;
 }
 
-export interface PhilhealthBracket {
-  min: number;
-  max: number;
-  premiumRate: number;
-}
-
 type ComputedSalaryKeys = keyof ComputedSalary;
 
 export interface ComputationKeys {
@@ -45,6 +39,7 @@ export interface ComputedSalary {
   dailySalary: number;
   totalDeductions: number;
   totalContribution: number;
+  period: number;
 }
 
 export interface ComputationLabelKeys {

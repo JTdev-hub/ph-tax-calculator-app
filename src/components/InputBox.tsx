@@ -23,7 +23,7 @@ const InputBox = ({ children, inputBox, onValueChange, onChange }: Props) => {
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           {children}
         </div>
-        {inputBox.type == "Parameters" ? (
+        {inputBox.type === "Parameters" ? (
           <NumericFormat
             id={inputBox.id}
             placeholder={inputBox.placeholder ?? "0"}

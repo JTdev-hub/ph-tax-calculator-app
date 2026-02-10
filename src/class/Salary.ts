@@ -1,6 +1,5 @@
 import {
   TaxBracket,
-  PhilhealthBracket,
   PagIbigBracket,
   SocialSecurityBracket,
   SalaryInformation,
@@ -13,7 +12,6 @@ class Salary {
   _taxableAllowance: number;
 
   applicableTaxBracket: TaxBracket;
-  applicablePhilhealthBracket: PhilhealthBracket;
   applicablePagIbigBracket: PagIbigBracket;
   applicableSSSBracket: SocialSecurityBracket;
 
@@ -21,7 +19,7 @@ class Salary {
     this._salary = salary.salary * salary.period;
     this._nonTaxableAllowance = salary.nonTaxableAllowance * salary.period;
     this._taxableAllowance = salary.taxableAllowance * salary.period;
-    this._annualSalary = this._salary * 12;
+    this._annualSalary = this._salary * Salary.MONTHS_PER_YEAR;
     this.applicableTaxBracket = this.findBracket(
       Salary.TAX_BRACKETS,
       this.annualSalary,
@@ -34,10 +32,6 @@ class Salary {
     this.applicablePagIbigBracket = this.findBracket(
       Salary.PAGIBIG_BRACKET,
       this.salary
-    );
-    this.applicablePhilhealthBracket = this.findBracket(
-      Salary.PHILHEALTH_BRACKET,
-      this.annualSalary
     );
   }
 
@@ -183,30 +177,14 @@ class Salary {
     },
   ];
 
-  private static readonly PHILHEALTH_BRACKET: PhilhealthBracket[] = [
-    {
-      min: 0,
-      max: 0,
-      premiumRate: 0,
-    },
-    {
-      min: 0,
-      max: 10_000,
-      premiumRate: 0.05,
-    },
+  private static readonly WORKING_DAYS_PER_MONTH = 22;
+  private static readonly MONTHS_PER_YEAR = 12;
+  private static readonly PAGIBIG_MAX_MONTHLY_CONTRIBUTION = 200;
 
-    {
-      min: 10_000,
-      max: 100_000,
-      premiumRate: 0.05,
-    },
-
-    {
-      min: 100_000,
-      max: Infinity,
-      premiumRate: 0.05,
-    },
-  ];
+  // PhilHealth Circular 2023-0009: 5% premium rate, clamped between ₱10,000–₱100,000 monthly salary
+  private static readonly PHILHEALTH_PREMIUM_RATE = 0.05;
+  private static readonly PHILHEALTH_MIN_MONTHLY_SALARY = 10_000;
+  private static readonly PHILHEALTH_MAX_MONTHLY_SALARY = 100_000;
 
   private findBracket<T extends { min: number; max: number }>(
     brackets: T[],
@@ -240,7 +218,7 @@ class Salary {
   }
 
   computeDailyRate(): number{
-    return this._salary / 22
+    return this._salary / Salary.WORKING_DAYS_PER_MONTH
   }
 
   computeSSSContribution(): number {
@@ -248,24 +226,21 @@ class Salary {
   }
 
   computePhilHealthContribution(): number {
-    const philHealthContribution =
-      this.applicablePhilhealthBracket.premiumRate * this.salary;
-
-    if (this.salary < Salary.PHILHEALTH_BRACKET[1].max) {
-      return 500 / 2;
-    }
-
-    if (this.salary > Salary.PHILHEALTH_BRACKET[3].min) {
-      return 5_000 / 2;
-    }
-    return philHealthContribution / 2;
+    const effectiveSalary = Math.min(
+      Math.max(this.salary, Salary.PHILHEALTH_MIN_MONTHLY_SALARY),
+      Salary.PHILHEALTH_MAX_MONTHLY_SALARY
+    );
+    // Employee share = 50% of total premium
+    return (effectiveSalary * Salary.PHILHEALTH_PREMIUM_RATE) / 2;
   }
 
   computePagIbigContribution(): number {
     const pagIbigContribution =
       this.applicablePagIbigBracket.employeeShare * this.salary;
 
-    return pagIbigContribution > 200 ? 200 : pagIbigContribution;
+    return pagIbigContribution > Salary.PAGIBIG_MAX_MONTHLY_CONTRIBUTION
+      ? Salary.PAGIBIG_MAX_MONTHLY_CONTRIBUTION
+      : pagIbigContribution;
   }
 
   computeContributionTotal(): number {
@@ -290,15 +265,15 @@ class Salary {
   computeMonthlyTax() {
     return (
       (this.applicableTaxBracket.baseTax +
-        (this.computeTaxableIncome() * 12 -
+        (this.computeTaxableIncome() * Salary.MONTHS_PER_YEAR -
           this.applicableTaxBracket.excessOver) *
           this.applicableTaxBracket.percentOver) /
-      12
+      Salary.MONTHS_PER_YEAR
     );
   }
 
   computeAnnualTax() {
-    return this.computeMonthlyTax() * 12;
+    return this.computeMonthlyTax() * Salary.MONTHS_PER_YEAR;
   }
 
   computeNetSalary(): number {

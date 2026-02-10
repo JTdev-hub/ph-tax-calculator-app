@@ -1,11 +1,17 @@
-import React, { FormEvent, useState, useCallback } from "react";
+import React, { FormEvent, useReducer, useState, useCallback, useEffect } from "react";
 import Card from "./Card";
 import { TbCurrencyPeso } from "react-icons/tb";
 import salary from "../class/Salary";
 import { ComputedSalary, SalaryInformation } from "../types/global";
-import { defaultComputedSalary, PERIOD } from "../constants/Constants";
+import {
+  defaultComputedSalary,
+  PERIOD,
+  DE_MINIMIS_BENEFITS,
+} from "../constants/Constants";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import InputBox from "./InputBox";
 import SelectionBox from "./SelectionBox";
+import { useFormPersistence } from "../hooks/useFormPersistence";
 
 interface Props {
   onCompute: (computedSalary: ComputedSalary) => void;
@@ -30,28 +36,55 @@ const inputFields = [
   },
 ];
 
-// Form state type
+// Form state — module-level so reducer and initial state can live here too
 interface FormState {
   salaryInput: string;
   nonTaxableAllowance: string;
   taxableAllowance: string;
   periodSelect: number;
-  summarySelect: number;
+}
+
+type FormAction =
+  | { type: "SET_FIELD"; key: keyof FormState; value: string | number }
+  | { type: "RESET" }
+  | { type: "RESTORE"; state: Partial<FormState> };
+
+const INITIAL_FORM_STATE: FormState = {
+  salaryInput: "",
+  nonTaxableAllowance: "",
+  taxableAllowance: "",
+  periodSelect: 1,
+};
+
+function formReducer(state: FormState, action: FormAction): FormState {
+  switch (action.type) {
+    case "SET_FIELD":
+      return { ...state, [action.key]: action.value };
+    case "RESET":
+      return INITIAL_FORM_STATE;
+    case "RESTORE":
+      return { ...state, ...action.state };
+    default:
+      return state;
+  }
 }
 
 const Parameters = ({ onCompute }: Props) => {
-  const [formState, setFormState] = useState<FormState>({
-    salaryInput: "",
-    nonTaxableAllowance: "",
-    taxableAllowance: "",
-    periodSelect: 1,
-    summarySelect: 1,
-  });
+  const [formState, dispatch] = useReducer(formReducer, INITIAL_FORM_STATE);
   const [error, setError] = useState<string | null>(null);
+  const [showDeMinimis, setShowDeMinimis] = useState<boolean>(false);
 
-  const handleNumericChange = useCallback(
+  const { getInitialState, persist, clearSaved } = useFormPersistence();
+
+  // Restore from URL params (priority) or localStorage on mount
+  useEffect(() => {
+    const restored = getInitialState();
+    if (restored) dispatch({ type: "RESTORE", state: restored });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const handleFieldChange = useCallback(
     (key: keyof FormState) => (raw: string) => {
-      setFormState((prev) => ({ ...prev, [key]: raw }));
+      dispatch({ type: "SET_FIELD", key, value: raw });
       setError(null);
     },
     [],
@@ -61,10 +94,7 @@ const Parameters = ({ onCompute }: Props) => {
     (key: keyof FormState) => (event: React.ChangeEvent<HTMLSelectElement>) => {
       const selectedValue = Number(event.target.value);
       if (!isNaN(selectedValue)) {
-        setFormState((prev) => ({
-          ...prev,
-          [key]: selectedValue,
-        }));
+        dispatch({ type: "SET_FIELD", key, value: selectedValue });
         setError(null);
       }
     },
@@ -75,7 +105,6 @@ const Parameters = ({ onCompute }: Props) => {
     (event: FormEvent) => {
       event.preventDefault();
       const parsedSalary = parseFloat(formState.salaryInput.replace(/,/g, ""));
-      console.log(parsedSalary);
       if (isNaN(parsedSalary) || parsedSalary <= 0) {
         setError("Basic pay must be a positive number");
         return;
@@ -104,23 +133,20 @@ const Parameters = ({ onCompute }: Props) => {
         dailySalary: salaryObj.computeDailyRate(),
         totalDeductions: salaryObj.computeTotalDeductions(),
         totalContribution: salaryObj.computeContributionTotal(),
+        period: formState.periodSelect,
       });
+      persist(formState);
       setError(null);
     },
-    [formState, onCompute],
+    [formState, onCompute, persist],
   );
 
   const handleReset = useCallback(() => {
-    setFormState({
-      salaryInput: "",
-      nonTaxableAllowance: "",
-      taxableAllowance: "",
-      periodSelect: 1,
-      summarySelect: 1,
-    });
+    dispatch({ type: "RESET" });
     onCompute(defaultComputedSalary);
+    clearSaved();
     setError(null);
-  }, [onCompute]);
+  }, [onCompute, clearSaved]);
 
   return (
     <Card className="h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
@@ -169,7 +195,7 @@ const Parameters = ({ onCompute }: Props) => {
                 value: formState[stateKey].toString(),
                 type: "Parameters",
               }}
-              onValueChange={handleNumericChange(stateKey)}
+              onValueChange={handleFieldChange(stateKey)}
             >
               <TbCurrencyPeso className="text-gray-500" size={20} />
             </InputBox>
@@ -189,6 +215,41 @@ const Parameters = ({ onCompute }: Props) => {
               </option>
             ))}
           </SelectionBox>
+        </div>
+        {/* De Minimis Benefits Info Toggle */}
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={() => setShowDeMinimis((prev) => !prev)}
+            className="flex w-full items-center justify-between rounded-lg border border-purple-200 bg-purple-50 px-3 py-2 text-sm font-medium text-purple-700 hover:bg-purple-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400/50"
+          >
+            <span>Non-taxable De Minimis Benefits (BIR caps)</span>
+            {showDeMinimis ? (
+              <ChevronUpIcon className="h-4 w-4 text-purple-500" />
+            ) : (
+              <ChevronDownIcon className="h-4 w-4 text-purple-500" />
+            )}
+          </button>
+          {showDeMinimis && (
+            <div className="mt-1 rounded-lg border border-purple-200 bg-purple-50 px-3 py-2">
+              <ul className="space-y-1.5">
+                {DE_MINIMIS_BENEFITS.map((benefit) => (
+                  <li
+                    key={benefit.name}
+                    className="flex items-start justify-between gap-2 text-xs"
+                  >
+                    <span className="text-gray-700">{benefit.name}</span>
+                    <span className="shrink-0 font-medium text-purple-700 tabular-nums">
+                      {benefit.cap}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs text-gray-400">
+                Per RR 11-2018 and subsequent BIR issuances
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons */}

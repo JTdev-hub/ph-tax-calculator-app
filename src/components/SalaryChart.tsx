@@ -1,14 +1,48 @@
+import React, { useState, useMemo, useCallback } from "react";
 import { defaultSalaryAllocation } from "../constants/Constants";
 import { ComputedSalary, SalaryAllocation } from "../types/global";
 import Card from "./Card";
 import { ResponsivePie } from "@nivo/pie";
 import InputBox from "./InputBox";
-import { useState, useMemo } from "react";
 import { TbPercentage } from "react-icons/tb";
 
 interface Props {
   computedSalary: ComputedSalary;
 }
+
+// Module-level component — avoids remount on every SalaryChart render
+interface CenteredMetricProps {
+  centerX: number;
+  centerY: number;
+  netSalary: number;
+}
+
+const CenteredMetric = ({ centerX, centerY, netSalary }: CenteredMetricProps) => (
+  <g>
+    <text
+      x={centerX}
+      y={centerY - 10}
+      textAnchor="middle"
+      dominantBaseline="central"
+      style={{ fontSize: 12, fontWeight: 600, fill: "#6B7280" }}
+    >
+      Net Salary
+    </text>
+    <text
+      x={centerX}
+      y={centerY + 10}
+      textAnchor="middle"
+      dominantBaseline="central"
+      style={{ fontSize: 18, fontWeight: 800, fill: "#7C3AED" }}
+    >
+      ₱
+      {netSalary.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </text>
+  </g>
+);
 
 const SalaryChart = ({ computedSalary }: Props) => {
   const [allocation, setAllocation] = useState<SalaryAllocation>({
@@ -48,76 +82,44 @@ const SalaryChart = ({ computedSalary }: Props) => {
     ],
   );
 
-  // Calculate totals for display
-  const totalAllocation =
-    allocation.needs + allocation.savings + allocation.wants;
-  const remaining = 1 - totalAllocation;
+  // Memoize derived totals
+  const { totalAllocation, remaining } = useMemo(() => {
+    const total = allocation.needs + allocation.savings + allocation.wants;
+    return { totalAllocation: total, remaining: 1 - total };
+  }, [allocation]);
+
+  // Stable memoized layer so CenteredMetric receives netSalary without remounting
+  const centeredMetricLayer = useMemo(
+    () =>
+      (props: { centerX: number; centerY: number }) =>
+        <CenteredMetric {...props} netSalary={computedSalary.netSalary} />,
+    [computedSalary.netSalary],
+  );
 
   // Handle allocation input changes
-  const handleAllocationChange =
+  const handleAllocationChange = useCallback(
     (key: keyof SalaryAllocation) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const rawValue = event.target.value.replace(/,/g, "");
-      const number = Number(rawValue) / 100;
-      if (!isNaN(number) && number >= 0 && number <= 1) {
-        setAllocation((prev) => {
-          const newAllocation = { ...prev, [key]: number };
-          const total =
-            newAllocation.needs + newAllocation.savings + newAllocation.wants;
-          if (total > 1) {
-            setError("Total allocation cannot exceed 100%");
-            return prev;
-          }
-          setError(null);
-          return newAllocation;
-        });
-      } else {
-        setError("Please enter a valid percentage between 0 and 100");
-      }
-    };
-
-  const CenteredMetric = ({
-    centerX,
-    centerY,
-  }: {
-    centerX: number;
-    centerY: number;
-  }) => {
-    return (
-      <g>
-        <text
-          x={centerX}
-          y={centerY - 10}
-          textAnchor="middle"
-          dominantBaseline="central"
-          style={{
-            fontSize: 12,
-            fontWeight: 600,
-            fill: "#6B7280",
-          }}
-        >
-          Net Salary
-        </text>
-        <text
-          x={centerX}
-          y={centerY + 10}
-          textAnchor="middle"
-          dominantBaseline="central"
-          style={{
-            fontSize: 18,
-            fontWeight: 800,
-            fill: "#7C3AED",
-          }}
-        >
-          ₱
-          {computedSalary.netSalary.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
-        </text>
-      </g>
-    );
-  };
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const rawValue = event.target.value.replace(/,/g, "");
+        const number = Number(rawValue) / 100;
+        if (!isNaN(number) && number >= 0 && number <= 1) {
+          setAllocation((prev) => {
+            const newAllocation = { ...prev, [key]: number };
+            const total =
+              newAllocation.needs + newAllocation.savings + newAllocation.wants;
+            if (total > 1) {
+              setError("Total allocation cannot exceed 100%");
+              return prev;
+            }
+            setError(null);
+            return newAllocation;
+          });
+        } else {
+          setError("Please enter a valid percentage between 0 and 100");
+        }
+      },
+    [],
+  );
 
   return (
     <Card className="h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
@@ -227,7 +229,7 @@ const SalaryChart = ({ computedSalary }: Props) => {
               ],
             },
           ]}
-          layers={["arcs", "arcLabels", "legends", CenteredMetric]}
+          layers={["arcs", "arcLabels", "legends", centeredMetricLayer]}
         />
       </div>
 

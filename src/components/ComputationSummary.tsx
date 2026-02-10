@@ -1,21 +1,66 @@
 import Card from "./Card";
 import { Computations } from "../types/global";
 import { formatPeso } from "../utils/format";
+import {
+  ClipboardDocumentIcon,
+  LinkIcon,
+  PrinterIcon,
+  CheckIcon,
+} from "@heroicons/react/24/outline";
+import { useCopyShare } from "../hooks/useCopyShare";
 
 interface Props {
   computation: Computations;
 }
 
 const ComputationSummary = ({ computation }: Props) => {
+  const { salary } = computation.computedSalary;
+
+  const { copyStatus, handleCopyText, handleShareUrl, effectiveTaxRate, annualTax } =
+    useCopyShare(computation.computedSalary);
+
+  const handlePrint = () => window.print();
+
   return (
     <Card className="h-full bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
       {/* Header Section */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-1.5 h-8 bg-gradient-to-b from-purple-500 to-indigo-600 rounded-full" />
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            Computation Summary
-          </h2>
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-8 bg-gradient-to-b from-purple-500 to-indigo-600 rounded-full" />
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+              Computation Summary
+            </h2>
+          </div>
+          {salary > 0 && (
+            <div className="no-print flex items-center gap-1 shrink-0">
+              <button
+                onClick={handleCopyText}
+                title="Copy summary as text"
+                className="p-2 rounded-lg text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-150"
+              >
+                {copyStatus === "text"
+                  ? <CheckIcon className="h-4 w-4 text-green-500" />
+                  : <ClipboardDocumentIcon className="h-4 w-4" />}
+              </button>
+              <button
+                onClick={handleShareUrl}
+                title="Copy shareable URL"
+                className="p-2 rounded-lg text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-150"
+              >
+                {copyStatus === "url"
+                  ? <CheckIcon className="h-4 w-4 text-green-500" />
+                  : <LinkIcon className="h-4 w-4" />}
+              </button>
+              <button
+                onClick={handlePrint}
+                title="Print / Save as PDF"
+                className="p-2 rounded-lg text-gray-500 hover:text-purple-600 hover:bg-purple-50 transition-colors duration-150"
+              >
+                <PrinterIcon className="h-4 w-4" />
+              </button>
+            </div>
+          )}
         </div>
         <p className="text-sm text-gray-600 leading-relaxed pl-5">
           Tax calculation based on current contribution matrices and TRAIN Law
@@ -134,6 +179,32 @@ const ComputationSummary = ({ computation }: Props) => {
                 </div>
               )
             )}
+          </div>
+        </div>
+
+        {/* Tax Insights */}
+        <div className="mt-2 p-4 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border-2 border-purple-200/50 shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600" />
+            <h3 className="font-bold text-base text-gray-800">Tax Insights</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center py-2.5 px-3 bg-white/70 rounded-lg">
+              <span className="text-sm font-medium text-gray-800">
+                Effective Tax Rate
+              </span>
+              <span className="font-bold text-base text-purple-700 tabular-nums">
+                {effectiveTaxRate.toFixed(2)}%
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-2.5 px-3 bg-white/70 rounded-lg">
+              <span className="text-sm font-medium text-gray-800">
+                Annual Tax
+              </span>
+              <span className="font-bold text-base text-purple-700 tabular-nums">
+                {formatPeso(annualTax)}
+              </span>
+            </div>
           </div>
         </div>
       </div>

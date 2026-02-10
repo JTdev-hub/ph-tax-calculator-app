@@ -1,7 +1,6 @@
 import React from "react";
 import { SelectionBoxProps } from "../types/global";
 import { ChevronDownIcon } from "@heroicons/react/16/solid";
-//import { PERIOD } from "../constants/Constants";
 
 interface Props {
   children?: React.ReactNode;

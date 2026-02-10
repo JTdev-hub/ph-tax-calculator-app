@@ -52,6 +52,7 @@ export const defaultComputedSalary: ComputedSalary = {
   dailySalary: 0,
   totalDeductions: 0,
   totalContribution: 0,
+  period: 1,
 };
 
 export const PERIOD: Period[] = [
@@ -77,3 +78,13 @@ export const defaultSalaryAllocation: SalaryAllocation = {
   savings: 0.3,
   wants: 0.2,
 };
+
+export const DE_MINIMIS_BENEFITS: { name: string; cap: string }[] = [
+  { name: "Rice Subsidy",                           cap: "₱2,000 / month" },
+  { name: "Clothing / Uniform Allowance",           cap: "₱6,000 / year" },
+  { name: "Medical Cash Allowance to Dependents",   cap: "₱1,500 / semester" },
+  { name: "Actual Medical Assistance",              cap: "₱10,000 / year" },
+  { name: "Laundry Allowance",                      cap: "₱300 / month" },
+  { name: "Employee Achievement Awards (non-cash)", cap: "₱10,000 / year" },
+  { name: "Christmas / Anniversary Gifts",          cap: "₱5,000 / year" },
+];
